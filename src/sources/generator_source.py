@@ -13,3 +13,5 @@ class GeneratorSource:
         deadline = datetime.now() + random.choice(self.deadline_variants)
         return Task(id=id, payload=payload, deadline=deadline)
     
+    def __str__(self):
+        return 'Источник-генератор'

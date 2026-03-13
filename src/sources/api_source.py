@@ -10,3 +10,5 @@ class ApiMock:
         deadline = datetime.strptime(input('Введите дедлайн(Пример: 18.03.2007): '), "%d.%m.%Y")
         return Task(id=id, payload=payload, deadline=deadline)
     
+    def __str__(self):
+        return 'API-заглушка'

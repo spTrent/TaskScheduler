@@ -13,3 +13,6 @@ class JsonSource:
                 raise ValueError('Неверный формат JSON файла. Должны быть ключи id, payload, deadline')
             return Task(task_dict['id'], task_dict['payload'], task_dict['deadline'])
         
+    def __str__(self):
+        return 'JSON-источник'
+        
