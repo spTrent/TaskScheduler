@@ -8,5 +8,5 @@ class Source(Protocol):
     """
     Интерфейс источника задач
     """
-    def get_task(self) -> Task:
-        pass
+
+    def get_task(self) -> Task: ...
