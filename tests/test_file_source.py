@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timezone
 
 import pytest
 
@@ -6,41 +6,57 @@ from src.contracts.task import Task
 from src.sources.file_source import FileSource
 
 
-def test_validate_text():
-    args = ['1', 'сделать дз', '15.03.2026']
+def test_parse_returns_valid_data() -> None:
+    text = '1:do homework:30.03.2026'
 
-    task_id, payload, deadline = FileSource.validate_text(args)
+    task_id, title, deadline = FileSource._parse(text)
 
     assert task_id == 1
-    assert payload == 'сделать дз'
-    assert deadline == datetime(2026, 3, 15)
+    assert title == 'do homework'
+    assert deadline == datetime(2026, 3, 30, tzinfo=timezone.utc)
 
 
-def test_validate_text_raises():
-    args = ['1', 'сделать дз']
+def test_parse_raises_for_invalid_format() -> None:
+    text = '1:do homework'
 
-    with pytest.raises(ValueError, match='Неверный формат в файле'):
-        FileSource.validate_text(args)
+    with pytest.raises(ValueError):
+        FileSource._parse(text)
 
 
-def test_correct_task(tmp_path):
+def test_parse_raises_for_invalid_id() -> None:
+    text = 'abc:do homework:15.03.2026'
+
+    with pytest.raises(ValueError):
+        FileSource._parse(text)
+
+
+def test_parse_raises_for_invalid_date() -> None:
+    text = '1:do homework:2026-03-15'
+
+    with pytest.raises(ValueError):
+        FileSource._parse(text)
+
+
+def test_get_task_returns_correct_task(tmp_path) -> None:
     file_path = tmp_path / 'task.txt'
-    file_path.write_text('1:сделать дз:15.03.2026', encoding='utf-8')
+    file_path.write_text('1:do homework:30.03.2026', encoding='utf-8')
 
     source = FileSource(filename=str(file_path))
     task = source.get_task()
 
     assert isinstance(task, Task)
     assert task.id == 1
-    assert task.payload == 'сделать дз'
-    assert task.deadline == datetime(2026, 3, 15)
+    assert task.title == 'do homework'
+    assert task.deadline == datetime(2026, 3, 30, tzinfo=timezone.utc)
+    assert task.done is False
+    assert task.done_at is None
 
 
-def test_get_task_raises_error_for_invalid_file_content(tmp_path):
+def test_get_task_raises_for_invalid_file_content(tmp_path) -> None:
     file_path = tmp_path / 'task.txt'
-    file_path.write_text('1:сделать дз', encoding='utf-8')
+    file_path.write_text('1:do homework', encoding='utf-8')
 
     source = FileSource(filename=str(file_path))
 
-    with pytest.raises(ValueError, match='Неверный формат в файле'):
+    with pytest.raises(ValueError):
         source.get_task()

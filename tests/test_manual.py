@@ -1,4 +1,3 @@
-from datetime import datetime
 from unittest.mock import patch
 
 import pytest
@@ -9,21 +8,31 @@ from src.sources.manual_input import ManualSource
 
 def test_str():
     source = ManualSource()
-    assert str(source) == 'Ручная запись'
+    assert str(source) == 'Manual source'
 
 
 def test_get_task_returns_expected_task():
-    inputs = ['1', 'Сделать лабу', '15.03.2026']
+    inputs = [
+        '1',
+        'Сделать лабу',
+        '3',
+        '',
+        'no',
+        '',
+        '',
+        '',
+    ]
 
     with patch('builtins.input', side_effect=inputs):
         task = ManualSource().get_task()
 
-    expected = Task(
-        id=1,
-        payload='Сделать лабу',
-        deadline=datetime(2026, 3, 15),
-    )
-    assert task == expected
+    assert isinstance(task, Task)
+    assert task.id == 1
+    assert task.title == 'Сделать лабу'
+    assert task.priority == 3
+    assert task.description == ''
+    assert task.done is False
+    assert task.done_at is None
 
 
 def test_get_task_raises_error_for_invalid_id():
