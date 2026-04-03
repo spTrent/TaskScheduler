@@ -46,10 +46,10 @@ Task.create(
 
 ### Инварианты:
 
-* ❌ Нельзя указать `done_at`, если `done=False`
-* ❌ `deadline < created_at`
-* ❌ `done_at < created_at`
-* ❌ `reopen()` с прошедшим дедлайном
+*  Нельзя указать `done_at`, если `done=False`
+*  `deadline < created_at`
+*  `done_at < created_at`
+*  `reopen()` с прошедшим дедлайном
 
 ---
 
