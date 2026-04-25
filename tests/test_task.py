@@ -179,7 +179,7 @@ def test_reopen_resets_done_and_done_at_and_sets_new_deadline() -> None:
         done_at=done_at,
     )
 
-    new_deadline = utc_dt(2026, 3, 30, 12, 0, 0)
+    new_deadline = utc_dt(2030, 3, 30, 12, 0, 0)
     task.reopen(new_deadline)
 
     assert task.done is False

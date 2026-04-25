@@ -7,13 +7,13 @@ from src.sources.file_source import FileSource
 
 
 def test_parse_returns_valid_data() -> None:
-    text = '1:do homework:30.03.2026'
+    text = '1:do homework:30.03.2030'
 
     task_id, title, deadline = FileSource._parse(text)
 
     assert task_id == 1
     assert title == 'do homework'
-    assert deadline == datetime(2026, 3, 30, tzinfo=timezone.utc)
+    assert deadline == datetime(2030, 3, 30, tzinfo=timezone.utc)
 
 
 def test_parse_raises_for_invalid_format() -> None:
@@ -24,14 +24,14 @@ def test_parse_raises_for_invalid_format() -> None:
 
 
 def test_parse_raises_for_invalid_id() -> None:
-    text = 'abc:do homework:15.03.2026'
+    text = 'abc:do homework:15.03.2030'
 
     with pytest.raises(ValueError):
         FileSource._parse(text)
 
 
 def test_parse_raises_for_invalid_date() -> None:
-    text = '1:do homework:2026-03-15'
+    text = '1:do homework:2030-03-15'
 
     with pytest.raises(ValueError):
         FileSource._parse(text)
@@ -39,7 +39,7 @@ def test_parse_raises_for_invalid_date() -> None:
 
 def test_get_task_returns_correct_task(tmp_path) -> None:
     file_path = tmp_path / 'task.txt'
-    file_path.write_text('1:do homework:30.03.2026', encoding='utf-8')
+    file_path.write_text('1:do homework:30.03.2030', encoding='utf-8')
 
     source = FileSource(filename=str(file_path))
     task = source.get_task()
@@ -47,7 +47,7 @@ def test_get_task_returns_correct_task(tmp_path) -> None:
     assert isinstance(task, Task)
     assert task.id == 1
     assert task.title == 'do homework'
-    assert task.deadline == datetime(2026, 3, 30, tzinfo=timezone.utc)
+    assert task.deadline == datetime(2030, 3, 30, tzinfo=timezone.utc)
     assert task.done is False
     assert task.done_at is None
 
